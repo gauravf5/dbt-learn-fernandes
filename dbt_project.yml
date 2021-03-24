@@ -36,4 +36,6 @@ models:
     materialized: table
     staging:
       materialized: view
+      orders_value:
+        materialized: view
 

@@ -10,6 +10,12 @@ select * from {{ref('stg_order')}}
 
 ),
 
+orders_value as (
+
+    select * from {{ref('orders_value')}}
+),
+
+
 customer_orders as (
 
     select
@@ -25,6 +31,17 @@ customer_orders as (
 
 ),
 
+customer_value as (
+    
+    select
+        order_id,
+        customer_id,
+        lifetime_value
+
+    from orders_value
+
+),
+
 
 final as (
 
@@ -34,11 +51,13 @@ final as (
         customers.last_name,
         customer_orders.first_order_date,
         customer_orders.most_recent_order_date,
-        coalesce(customer_orders.number_of_orders, 0) as number_of_orders
+        coalesce(customer_orders.number_of_orders, 0) as number_of_orders,
+        customer_value.lifetime_value
 
     from customers
 
     left join customer_orders using (customer_id)
+    left join customer_value using (customer_id)
 
 )
 
